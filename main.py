@@ -18,8 +18,8 @@ grid = [[0 for i in range(cols)] for j in range(rows)]
 
 people=[]
 for i in range(200):
-    tempx = 0;
-    tempy = 0;
+    tempx = 0
+    tempy = 0
     while True:
         tempx = random.randrange(0,100)
         tempy = random.randrange(0,100)
@@ -29,6 +29,7 @@ for i in range(200):
     people.append(Person(tempx,tempy,i,False))
     grid[tempx][tempy] = people[i]
         
-    
-for row in grid: 
-    print(row) 
+for p in people:
+    plt.plot(p.x, p.y, marker='o', markersize=10    , color="red")
+    print(p.x," ", p.y)
+plt.show()
