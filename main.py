@@ -10,6 +10,11 @@ class Person(object):
         self.y=y_
         self.id=id_
         self.infected=infected_
+    def __str__(self):
+        if self.infected == True:
+            return "I"
+        else:
+            return "S"
 
 # 2D array 
 rows, cols = (10, 10) 
@@ -28,7 +33,13 @@ for i in range(20):
     
     people.append(Person(tempx,tempy,i,False))
     grid[tempx][tempy] = people[i]
-        
+people[random.randrange(0,len(people)-1)].infected = True
+for p in grid:
+    for element in p:
+        print(element, end=' ')
+    print()
+"""        
+
 for p in people:
     plt.plot(p.x, p.y, marker='o', markersize=10    , color="red")
 
@@ -38,7 +49,9 @@ plt.yticks(range(0, 9))
 plt.grid()
 plt.show()
 
-"""
+
+
+
 im = plt.imshow(np.reshape(np.random.rand(100), newshape=(10,10)),
                     interpolation='none', vmin=0, vmax=1, aspect='equal')
 ax = plt.gca()
