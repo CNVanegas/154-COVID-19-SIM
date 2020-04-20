@@ -4,6 +4,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+boardSIZE = 10
+numOfPeople = 20
+
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
         self.x=x_
@@ -23,25 +26,25 @@ class Person(object):
         # 0 = up 1 = down 2=left 3=right
         for i in dirs:
             if i == 0:
-                if grid_[self.x][self.y-1] == 0:
+                if (self.y-1 > 0) and (grid_[self.x][self.y-1] == 0):
                     grid_[self.x][self.y] = 0
                     self.y -= 1
                     grid_[self.x][self.y] = self
                     break
             elif i == 1:
-                if grid_[self.x][self.y+1] == 0:
+                if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] == 0):
                     grid_[self.x][self.y] = 0
                     self.y += 1
                     grid_[self.x][self.y] = self
                     break
             elif i == 2:
-                if grid_[self.x-1][self.y] == 0:
+                if  (self.x-1 > 0) and (grid_[self.x-1][self.y] == 0):
                     grid_[self.x][self.y] = 0
                     self.x -= 1
                     grid_[self.x][self.y] = self
                     break
             elif i == 3:
-                if grid_[self.x+1][self.y] == 0:
+                if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] == 0):
                     grid_[self.x][self.y] = 0
                     self.x += 1
                     grid_[self.x][self.y] = self
@@ -52,15 +55,15 @@ grid=[]
 people=[]
 def initSim():
     # 2D array 
-    rows, cols = (10, 10) 
+    rows, cols = (boardSIZE, boardSIZE) 
     grid = [[0 for i in range(cols)] for j in range(rows)] 
 #print(grid)
-    for i in range(20):
+    for i in range(numOfPeople):
         tempx = 0
         tempy = 0
         while True:
-            tempx = random.randrange(0,10)
-            tempy = random.randrange(0,10)
+            tempx = random.randrange(0,boardSIZE)
+            tempy = random.randrange(0,boardSIZE)
             if grid[tempx][tempy] == 0:
                 break
     
@@ -72,3 +75,9 @@ def initSim():
             print(element, end=' ')
         print()
 initSim()
+for i in people:
+    i.step(grid)
+for p in grid:
+        for element in p:
+            print(element, end=' ')
+        print()    
