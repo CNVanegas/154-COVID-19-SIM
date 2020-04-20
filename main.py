@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 boardSIZE = 10
 numOfPeople = 20
-
+numInfected = 1
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
         self.x=x_
@@ -50,6 +50,33 @@ class Person(object):
                     grid_[self.x][self.y] = self
                     break
             #put code for checking virus either here or down below after all people have moved.
+    def updateInfected(self, grid_):
+        dirs = [0,1,2,3]
+        #get direction up down left right and move if it is open.
+        # 0 = up 1 = down 2=left 3=right
+        global numInfected
+        if self.infected == False:
+            for i in dirs:
+                if i == 0:
+                    if (self.y-1 > 0) and (grid_[self.x][self.y-1] != 0) and (grid_[self.x][self.y-1].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+                elif i == 1:
+                    if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] != 0) and (grid_[self.x][self.y+1].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+                elif i == 2:
+                    if  (self.x-1 > 0) and (grid_[self.x-1][self.y] != 0) and (grid_[self.x-1][self.y].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+                elif i == 3:
+                    if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] != 0) and (grid_[self.x+1][self.y].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
 
 grid=[]
 people=[]
@@ -77,9 +104,12 @@ def initSim():
            print(element, end=' ')
         print()
 initSim()
-for i in people:
-   i.step(grid)
-print()
+while numInfected < numOfPeople:
+    for i in people:
+        i.step(grid)
+    for i in people:
+        i.updateInfected(grid)
+
 for p in grid:
     for element in p:
         print(element, end=' ')
