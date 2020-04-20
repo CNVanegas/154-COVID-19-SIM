@@ -16,7 +16,37 @@ class Person(object):
         else:
             return "S"
 
-
+    def step(self, grid_):
+        dirs = [0,1,2,3]
+        random.shuffle(dirs)
+        #get direction up down left right and move if it is open.
+        # 0 = up 1 = down 2=left 3=right
+        for i in dirs:
+            if i == 0:
+                if grid_[self.x][self.y-1] == 0:
+                    grid_[self.x][self.y] = 0
+                    self.y -= 1
+                    grid_[self.x][self.y] = self
+                    break
+            elif i == 1:
+                if grid_[self.x][self.y+1] == 0:
+                    grid_[self.x][self.y] = 0
+                    self.y += 1
+                    grid_[self.x][self.y] = self
+                    break
+            elif i == 2:
+                if grid_[self.x-1][self.y] == 0:
+                    grid_[self.x][self.y] = 0
+                    self.x -= 1
+                    grid_[self.x][self.y] = self
+                    break
+            elif i == 3:
+                if grid_[self.x+1][self.y] == 0:
+                    grid_[self.x][self.y] = 0
+                    self.x += 1
+                    grid_[self.x][self.y] = self
+                    break
+            #put code for checking virus either here or down below after all people have moved.
 
 grid=[]
 people=[]
