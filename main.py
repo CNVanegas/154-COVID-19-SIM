@@ -32,8 +32,8 @@ for i in range(20):
 for p in people:
     plt.plot(p.x, p.y, marker='o', markersize=10    , color="red")
 
-plt.xticks(range(0, 9))
-plt.yticks(range(0, 9))
+plt.xticks(range(0, 11))
+plt.yticks(range(0, 11))
 
 plt.grid()
 plt.show()
