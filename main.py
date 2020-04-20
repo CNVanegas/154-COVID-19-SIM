@@ -72,13 +72,14 @@ def initSim():
         people.append(Person(tempx,tempy,i,False))
         grid[tempx][tempy] = people[i]
     people[random.randrange(0,len(people)-1)].infected = True
-   # for p in grid:
-    #    for element in p:
-     #       print(element, end=' ')
-      #  print()
+    for p in grid:
+        for element in p:
+           print(element, end=' ')
+        print()
 initSim()
 for i in people:
    i.step(grid)
+print()
 for p in grid:
     for element in p:
         print(element, end=' ')
