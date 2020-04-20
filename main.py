@@ -55,7 +55,9 @@ grid=[]
 people=[]
 def initSim():
     # 2D array 
-    rows, cols = (boardSIZE, boardSIZE) 
+    rows, cols = (boardSIZE, boardSIZE)
+    global grid
+    global people
     grid = [[0 for i in range(cols)] for j in range(rows)] 
 #print(grid)
     for i in range(numOfPeople):
@@ -70,14 +72,14 @@ def initSim():
         people.append(Person(tempx,tempy,i,False))
         grid[tempx][tempy] = people[i]
     people[random.randrange(0,len(people)-1)].infected = True
-    for p in grid:
-        for element in p:
-            print(element, end=' ')
-        print()
+   # for p in grid:
+    #    for element in p:
+     #       print(element, end=' ')
+      #  print()
 initSim()
 for i in people:
-    i.step(grid)
+   i.step(grid)
 for p in grid:
-        for element in p:
-            print(element, end=' ')
-        print()    
+    for element in p:
+        print(element, end=' ')
+    print()    
