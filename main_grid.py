@@ -92,7 +92,7 @@ for p in grid:
 
 
 def makeGrid():
-    fig = plt.figure(figsize=[8,8])
+    fig = plt.figure(figsize=[10,10])
     ax = fig.gca()
     ax.set_xticks(np.arange(-0.5,boardSIZE, 1))
     ax.set_yticks(np.arange(-0.5,boardSIZE, 1))
@@ -102,7 +102,7 @@ def makeGrid():
 
     for p in people:
         if p.infected:
-            plt.plot(p.x,p.y, marker = 'o', markersize = 3, color="orange")
+            plt.plot(p.x,p.y, marker = 'o', markersize = 3, color="red")
         else:
             plt.plot(p.x,p.y,marker = 'o', markersize = 3, color="blue")
     plt.grid()
