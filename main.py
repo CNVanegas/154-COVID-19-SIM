@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 
 boardSIZE = 10
 numOfPeople = 20
+grid=[]
+people=[]
 numInfected = 1
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
@@ -78,8 +80,8 @@ class Person(object):
                         numInfected+=1
                         break
 
-grid=[]
-people=[]
+
+
 def initSim():
     # 2D array 
     rows, cols = (boardSIZE, boardSIZE)
@@ -103,14 +105,30 @@ def initSim():
         for element in p:
            print(element, end=' ')
         print()
-initSim()
-while numInfected < numOfPeople:
-    for i in people:
-        i.step(grid)
-    for i in people:
-        i.updateInfected(grid)
+def resetVars():
+    global grid
+    global people
+    global numInfected
+    grid = []
+    people = []
+    numInfected = 1
 
-for p in grid:
-    for element in p:
-        print(element, end=' ')
-    print()    
+for i in range(2):
+    pass
+    initSim()
+    timestep = 0
+    while numInfected < numOfPeople:
+        for i in people:
+            i.step(grid)
+        for i in people:
+            i.updateInfected(grid)
+        timestep+=1
+
+    print(timestep)
+    for p in grid:
+        for element in p:
+            print(element, end=' ')
+        print()    
+    print()
+
+    resetVars()
