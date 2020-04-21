@@ -9,12 +9,17 @@ numOfPeople = 20
 grid=[]
 people=[]
 numInfected = 1
+numImmune = 0
+numDead = 0
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
         self.x=x_
         self.y=y_
         self.id=id_
         self.infected=infected_
+        self.immune=False
+        self.timeSinceInfection=0
+        self.dead=False
     def __str__(self):
         if self.infected == True:
             return "I"
@@ -22,10 +27,17 @@ class Person(object):
             return "S"
 
     def step(self, grid_):
-        dirs = [0,1,2,3]
-        random.shuffle(dirs)
+        
+        
+        if self.dead == True:
+            return
+        if self.infected == True:
+            self.timeSinceInfection+=1
+
         #get direction up down left right and move if it is open.
         # 0 = up 1 = down 2=left 3=right
+        dirs = [0,1,2,3]
+        random.shuffle(dirs)
         for i in dirs:
             if i == 0:
                 if (self.y-1 > 0) and (grid_[self.x][self.y-1] == 0):
@@ -57,7 +69,7 @@ class Person(object):
         #get direction up down left right and move if it is open.
         # 0 = up 1 = down 2=left 3=right
         global numInfected
-        if self.infected == False:
+        if self.infected == False and self.immune == False and self.dead == False:
             for i in dirs:
                 if i == 0:
                     if (self.y-1 > 0) and (grid_[self.x][self.y-1] != 0) and (grid_[self.x][self.y-1].infected == True):
@@ -79,6 +91,25 @@ class Person(object):
                         self.infected=True
                         numInfected+=1
                         break
+    def liveOrDie(self, grid_,diechance,livechance):
+        global numDead
+        global numImmune
+        global numInfected
+        if self.infected == True and self.timeSinceInfection == 20:
+            self.timeSinceInfection=0
+            randnum = random.randrange(100)
+            if randnum < livechance:
+                self.immune = True
+                self.infected = False
+                numInfected-=20
+                numImmune+=1
+            else:
+                self.infected = False
+                self.dead = True
+                grid_[self.x][self.y] = 0
+                numInfected-=1
+                numDead+=1
+
 
 
 
@@ -110,26 +141,45 @@ def resetVars():
     global grid
     global people
     global numInfected
+    global numImmune
+    global numDead
     grid = []
     people = []
     numInfected = 1
+    numImmune = 0
+    numDead = 0
 
-def runSim(list1,list2):
+def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
+    resetVars()
     newInfected=[]
-    alreadyInfected=[]
+    alreadyInfected=[] 
     initSim()
     timestep = 0
     newInfected.append(0)
     alreadyInfected.append(1)
-    while numInfected < numOfPeople:
-        numInfect = numInfected
-        for i in people:
-            i.step(grid)
-        for i in people:
-            i.updateInfected(grid)
-        timestep+=1
-        newInfected.append(numInfected-numInfect)
-        alreadyInfected.append(numInfect)
+     
+    if mode == 1:
+        while numInfected < numOfPeople:
+            numInfect = numInfected
+            for i in people:
+                i.step(grid)
+            for i in people:
+                i.updateInfected(grid)
+            timestep+=1
+            newInfected.append(numInfected-numInfect)
+            alreadyInfected.append(numInfect)
+    else:
+        while numInfected > 0:
+            numInfect = numInfected
+            for i in people:
+                i.liveOrDie(grid,death,recovery)
+            for i in people:
+                i.step(grid)
+            for i in people:
+                i.updateInfected(grid)
+            timestep+=1
+            newInfected.append(numInfected-numInfect)
+            alreadyInfected.append(numInfect)
 
     #print(timestep)
     list2.append(alreadyInfected)
@@ -145,8 +195,10 @@ totalAvgNewInfected =[]
 partAGotInfected = pd.DataFrame()
 partAAlreadyInfected = pd.DataFrame()
 
+
+#PART A
 for i in range(1):
-    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
@@ -156,7 +208,7 @@ partAAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(10):
-    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
@@ -166,7 +218,7 @@ partAAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(100):
-    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
@@ -176,7 +228,7 @@ partAAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(1000):
-    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
@@ -186,3 +238,55 @@ partAAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
 print(partAGotInfected)
 print()
 print(partAAlreadyInfected)
+
+
+#PART B
+print()
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[]
+temp =[] 
+
+partBGotInfected = pd.DataFrame()
+partBAlreadyInfected = pd.DataFrame()
+
+for i in range(1):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(10):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(100):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(1000):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
+
+print(partBGotInfected)
+print()
+print(partBAlreadyInfected)
