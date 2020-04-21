@@ -158,6 +158,7 @@ def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
     newInfected.append(0)
     alreadyInfected.append(1)
      
+     #mode1 is part A, else is other modes for now
     if mode == 1:
         while numInfected < numOfPeople:
             numInfect = numInfected
