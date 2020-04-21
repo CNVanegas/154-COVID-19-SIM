@@ -101,10 +101,11 @@ def initSim():
         people.append(Person(tempx,tempy,i,False))
         grid[tempx][tempy] = people[i]
     people[random.randrange(0,len(people)-1)].infected = True
-    for p in grid:
-        for element in p:
-           print(element, end=' ')
-        print()
+    #for p in grid:
+        #for element in p:
+           #print(element, end=' ')
+        #print()
+
 def resetVars():
     global grid
     global people
@@ -112,23 +113,34 @@ def resetVars():
     grid = []
     people = []
     numInfected = 1
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
 
-for i in range(2):
-    pass
+for i in range(10):
+    newInfected=[]
+    alreadyInfected=[]
     initSim()
     timestep = 0
+    newInfected.append(0)
+    alreadyInfected.append(1)
     while numInfected < numOfPeople:
+        numInfect = numInfected
         for i in people:
             i.step(grid)
         for i in people:
             i.updateInfected(grid)
         timestep+=1
+        newInfected.append(numInfected-numInfect)
+        alreadyInfected.append(numInfect)
 
-    print(timestep)
-    for p in grid:
+    #print(timestep)
+    totalAvgAlreadyInfected.append(alreadyInfected)
+    totalAvgNewInfected.append(newInfected)
+    """for p in grid:
         for element in p:
             print(element, end=' ')
         print()    
-    print()
-
+    print()"""
     resetVars()
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+print(tempDF)
