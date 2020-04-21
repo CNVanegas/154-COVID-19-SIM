@@ -113,10 +113,8 @@ def resetVars():
     grid = []
     people = []
     numInfected = 1
-totalAvgAlreadyInfected =[] 
-totalAvgNewInfected =[] 
 
-for i in range(10):
+def runSim(list1,list2):
     newInfected=[]
     alreadyInfected=[]
     initSim()
@@ -134,13 +132,57 @@ for i in range(10):
         alreadyInfected.append(numInfect)
 
     #print(timestep)
-    totalAvgAlreadyInfected.append(alreadyInfected)
-    totalAvgNewInfected.append(newInfected)
+    list2.append(alreadyInfected)
+    list1.append(newInfected)
     """for p in grid:
         for element in p:
             print(element, end=' ')
         print()    
     print()"""
     resetVars()
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+partAGotInfected = pd.DataFrame()
+partAAlreadyInfected = pd.DataFrame()
+
+for i in range(1):
+    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
-print(tempDF)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(10):
+    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(100):
+    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(1000):
+    runSim(totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
+
+print(partAGotInfected)
+print()
+print(partAAlreadyInfected)
