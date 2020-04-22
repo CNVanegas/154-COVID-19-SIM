@@ -27,13 +27,12 @@ class Person(object):
             return "S"
 
     def step(self, grid_):
-    """
-    Purpose is to generate random movement of the people inside grid
+        """
+        Purpose is to generate random movement of the people inside grid
 
-    Self used to denote the person object, grid being the map of people positions
-    and movements possible
-    """
-        
+        Self used to denote the person object, grid being the map of people positions
+        and movements possible
+        """
         if self.dead == True:
             return
         if self.infected == True:
