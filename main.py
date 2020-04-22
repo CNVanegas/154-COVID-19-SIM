@@ -1,63 +1,177 @@
+
 import random
 from itertools import count
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+boardSIZE = 10
+numOfPeople = 20
+grid=[]
+people=[]
+numInfected = 1
+numImmune = 0
+numDead = 0
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
         self.x=x_
         self.y=y_
         self.id=id_
         self.infected=infected_
+        self.immune=False
+        self.timeSinceInfection=0
+        self.dead=False
+    def __str__(self):
+        if self.infected == True:
+            return "I"
+        else:
+            return "S"
 
-# 2D array 
-rows, cols = (10, 10) 
-grid = [[0 for i in range(cols)] for j in range(rows)] 
+    def step(self, grid_):
+        """
+        Purpose is to generate random movement of the people inside grid
+        Self used to denote the person object, grid being the map of people positions
+        and movements possible
+        """
+        if self.dead == True:
+            return
+        if self.infected == True:
+            self.timeSinceInfection+=1
+
+        #get direction up down left right and move if it is open.
+        # 0 = up 1 = down 2=left 3=right
+        dirs = [0,1,2,3]
+        random.shuffle(dirs) #Movement directions randomized for random movement
+        for i in dirs:
+            if i == 0:
+                if (self.y-1 > 0) and (grid_[self.x][self.y-1] == 0):
+                    grid_[self.x][self.y] = 0   #Current square of person set to 0 after once they've moved
+                    self.y -= 1
+                    grid_[self.x][self.y] = self #Updating grid to contain person
+                    break
+            elif i == 1:
+                if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] == 0):
+                    grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
+                    self.y += 1
+                    grid_[self.x][self.y] = self #Updating grid to contain person
+                    break
+            elif i == 2:
+                if  (self.x-1 > 0) and (grid_[self.x-1][self.y] == 0):
+                    grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
+                    self.x -= 1
+                    grid_[self.x][self.y] = self #Updating grid to contain person
+                    break
+            elif i == 3:
+                if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] == 0):
+                    grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
+                    self.x += 1
+                    grid_[self.x][self.y] = self #Updating grid to contain person
+                    break
+            #put code for checking virus either here or down below after all people have moved.
+
+    def updateInfected(self, grid_):
+        dirs = [0,1,2,3]
+        #get direction up down left right and move if it is open.
+        # 0 = up 1 = down 2=left 3=right
+        global numInfected
+        if self.infected == False and self.immune == False and self.dead == False:
+            for i in dirs:
+                if i == 0:
+                    if (self.y-1 > 0) and (grid_[self.x][self.y-1] != 0) and (grid_[self.x][self.y-1].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+                elif i == 1:
+                    if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] != 0) and (grid_[self.x][self.y+1].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+                elif i == 2:
+                    if  (self.x-1 > 0) and (grid_[self.x-1][self.y] != 0) and (grid_[self.x-1][self.y].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+                elif i == 3:
+                    if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] != 0) and (grid_[self.x+1][self.y].infected == True):
+                        self.infected=True
+                        numInfected+=1
+                        break
+
+    def liveOrDie(self, grid_,diechance,livechance):
+        """
+        Function determines whether and infected person in the grid recovers
+        or dies from the infection based on predetermined chance percentages 
+        """
+        global numDead
+        global numImmune
+        global numInfected
+        if self.infected == True and self.timeSinceInfection == 20:
+            self.timeSinceInfection=0
+            randnum = random.randrange(100)
+            if randnum < livechance:
+                self.immune = True
+                self.infected = False
+                numInfected-=1
+                numImmune+=1
+            else:
+                self.infected = False
+                self.dead = True
+                grid_[self.x][self.y] = 0
+                numInfected-=1
+                numDead+=1
+
+
+
+
+def initSim():
+    # 2D array 
+    rows, cols = (boardSIZE, boardSIZE)
+    global grid
+    global people
+    grid = [[0 for i in range(cols)] for j in range(rows)] 
 #print(grid)
-
-people=[]
-for i in range(20):
-    tempx = 0
-    tempy = 0
-    while True:
-        tempx = random.randrange(0,10)
-        tempy = random.randrange(0,10)
-        if grid[tempx][tempy] == 0:
-            break
+    for i in range(numOfPeople):
+        tempx = 0
+        tempy = 0
+        while True:
+            tempx = random.randrange(0,boardSIZE)
+            tempy = random.randrange(0,boardSIZE)
+            if grid[tempx][tempy] == 0:
+                break
     
-<<<<<<< Updated upstream
-    people.append(Person(tempx,tempy,i,False))
-    grid[tempx][tempy] = people[i]
-        
-for p in people:
-    plt.plot(p.x, p.y, marker='o', markersize=10    , color="red")
+        people.append(Person(tempx,tempy,i,False))
+        grid[tempx][tempy] = people[i]
+    people[random.randrange(0,len(people)-1)].infected = True
+    #for p in grid:
+        #for element in p:
+           #print(element, end=' ')
+        #print()
 
-plt.xticks(range(0, 11))
-plt.yticks(range(0, 11))
+def resetVars():
+    global grid
+    global people
+    global numInfected
+    global numImmune
+    global numDead
+    grid = []
+    people = []
+    numInfected = 1
+    numImmune = 0
+    numDead = 0
 
-plt.grid()
-plt.show()
-
-"""
-im = plt.imshow(np.reshape(np.random.rand(100), newshape=(10,10)),
-                    interpolation='none', vmin=0, vmax=1, aspect='equal')
-ax = plt.gca()
-ax.set_xticks(np.arange(0, 10, 1))
-ax.set_yticks(np.arange(0, 10, 1))
-ax.set_xticklabels(np.arange(1, 11, 1))
-ax.set_yticklabels(np.arange(1, 11, 1))
-plt.show()"""
-
-"""foo = np.random.rand(35).reshape(5, 7)
-# This keeps the default orientation (origin at top left):
-extent = (0, foo.shape[1], foo.shape[0], 0)
-_, ax = plt.subplots()
-ax.imshow(foo, extent=extent)
-ax.grid(color='w', linewidth=2)
-ax.set_frame_on(False)
-plt.show()"""
-=======
+def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
+    """
+    runSim main functionality is running a random simulation of infection
+    with certain givens, being population size, grid size, number of infected,
+    death chance percent, and recovery chance percent. 
+    mode: Determines whether running the Basic Simulation for Part A
+          Or Other Customized parameters for later parts that may affect infection.
+    List 1: Is the list containing the total average or newly infected
+    List 2: Is the list containing the total average of already infected
+    List 3: Currently Unused
+    Death: Represents percent chance of death from infection
+    Recovery: Represents percent change of recovery from infection
+    
     """
     resetVars()
     newInfected=[]
@@ -201,5 +315,4 @@ partBAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
 print(partBGotInfected)
 print()
 print(partBAlreadyInfected)
-print()
->>>>>>> Stashed changes
+
