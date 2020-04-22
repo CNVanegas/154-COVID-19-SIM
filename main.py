@@ -26,6 +26,7 @@ for i in range(20):
         if grid[tempx][tempy] == 0:
             break
     
+<<<<<<< Updated upstream
     people.append(Person(tempx,tempy,i,False))
     grid[tempx][tempy] = people[i]
         
@@ -56,3 +57,149 @@ ax.imshow(foo, extent=extent)
 ax.grid(color='w', linewidth=2)
 ax.set_frame_on(False)
 plt.show()"""
+=======
+    """
+    resetVars()
+    newInfected=[]
+    alreadyInfected=[] 
+    initSim()
+    timestep = 0
+    newInfected.append(0)
+    alreadyInfected.append(1)
+     
+     #mode1 is part A, else is other modes for now
+    if mode == 1:
+        while numInfected < numOfPeople:
+            numInfect = numInfected
+            for i in people:
+                i.step(grid)
+            for i in people:
+                i.updateInfected(grid)
+            timestep+=1
+            newInfected.append(numInfected-numInfect)
+            alreadyInfected.append(numInfect)
+    else:
+        while numInfected > 0:
+            for i in people:
+                i.liveOrDie(grid,death,recovery)
+            numInfect = numInfected
+
+            for i in people:
+                i.step(grid)
+            for i in people:
+                i.updateInfected(grid)
+            timestep+=1
+            newInfected.append(numInfected-numInfect)
+            alreadyInfected.append(numInfect)
+
+    #print(timestep)
+    list2.append(alreadyInfected)
+    list1.append(newInfected)
+    """for p in grid:
+        for element in p:
+            print(element, end=' ')
+        print()    
+    print()"""
+    resetVars()
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+partAGotInfected = pd.DataFrame()
+partAAlreadyInfected = pd.DataFrame()
+
+
+#PART A
+for i in range(1):
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(10):
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(100):
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(1000):
+    runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partAGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
+partAAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
+
+print(partAGotInfected)
+print()
+print(partAAlreadyInfected)
+
+
+#PART B
+print()
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[]
+temp =[] 
+
+partBGotInfected = pd.DataFrame()
+partBAlreadyInfected = pd.DataFrame()
+
+for i in range(1):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(10):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(100):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
+
+totalAvgAlreadyInfected =[] 
+totalAvgNewInfected =[] 
+for i in range(1000):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+partBGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
+partBAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
+
+print(partBGotInfected)
+print()
+print(partBAlreadyInfected)
+print()
+>>>>>>> Stashed changes
