@@ -27,7 +27,12 @@ class Person(object):
             return "S"
 
     def step(self, grid_):
-        
+    """
+    Purpose is to generate random movement of the people inside grid
+
+    Self used to denote the person object, grid being the map of people positions
+    and movements possible
+    """
         
         if self.dead == True:
             return
@@ -37,33 +42,34 @@ class Person(object):
         #get direction up down left right and move if it is open.
         # 0 = up 1 = down 2=left 3=right
         dirs = [0,1,2,3]
-        random.shuffle(dirs)
+        random.shuffle(dirs) #Movement directions randomized for random movement
         for i in dirs:
             if i == 0:
                 if (self.y-1 > 0) and (grid_[self.x][self.y-1] == 0):
-                    grid_[self.x][self.y] = 0
+                    grid_[self.x][self.y] = 0   #Current square of person set to 0 after once they've moved
                     self.y -= 1
-                    grid_[self.x][self.y] = self
+                    grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             elif i == 1:
                 if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] == 0):
-                    grid_[self.x][self.y] = 0
+                    grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
                     self.y += 1
-                    grid_[self.x][self.y] = self
+                    grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             elif i == 2:
                 if  (self.x-1 > 0) and (grid_[self.x-1][self.y] == 0):
-                    grid_[self.x][self.y] = 0
+                    grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
                     self.x -= 1
-                    grid_[self.x][self.y] = self
+                    grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             elif i == 3:
                 if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] == 0):
-                    grid_[self.x][self.y] = 0
+                    grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
                     self.x += 1
-                    grid_[self.x][self.y] = self
+                    grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             #put code for checking virus either here or down below after all people have moved.
+
     def updateInfected(self, grid_):
         dirs = [0,1,2,3]
         #get direction up down left right and move if it is open.
@@ -91,7 +97,12 @@ class Person(object):
                         self.infected=True
                         numInfected+=1
                         break
+
     def liveOrDie(self, grid_,diechance,livechance):
+        """
+        Function determines whether and infected person in the grid recovers
+        or dies from the infection based on predetermined chance percentages 
+        """
         global numDead
         global numImmune
         global numInfected
@@ -101,7 +112,7 @@ class Person(object):
             if randnum < livechance:
                 self.immune = True
                 self.infected = False
-                numInfected-=20
+                numInfected-=1
                 numImmune+=1
             else:
                 self.infected = False
@@ -150,6 +161,20 @@ def resetVars():
     numDead = 0
 
 def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
+    """
+    runSim main functionality is running a random simulation of infection
+    with certain givens, being population size, grid size, number of infected,
+    death chance percent, and recovery chance percent. 
+
+    mode: Determines whether running the Basic Simulation for Part A
+          Or Other Customized parameters for later parts that may affect infection.
+    List 1: Is the list containing the total average or newly infected
+    List 2: Is the list containing the total average of already infected
+    List 3: Currently Unused
+    Death: Represents percent chance of death from infection
+    Recovery: Represents percent change of recovery from infection
+    
+    """
     resetVars()
     newInfected=[]
     alreadyInfected=[] 
@@ -171,9 +196,10 @@ def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
             alreadyInfected.append(numInfect)
     else:
         while numInfected > 0:
-            numInfect = numInfected
             for i in people:
                 i.liveOrDie(grid,death,recovery)
+            numInfect = numInfected
+
             for i in people:
                 i.step(grid)
             for i in people:
