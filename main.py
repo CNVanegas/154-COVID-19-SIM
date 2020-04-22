@@ -5,12 +5,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 boardSIZE = 10
+infectionRadius = 1
+steps = 20
+deathchance = 10
+recoverychance = 90
+SocDist = 1
 numOfPeople = 20
 grid=[]
 people=[]
 numInfected = 1
 numImmune = 0
 numDead = 0
+numDeadatStep = 0
+numRecoveredatStep = 0
+
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
         self.x=x_
@@ -20,6 +28,7 @@ class Person(object):
         self.immune=False
         self.timeSinceInfection=0
         self.dead=False
+        self.resilience = random.randint(1,9)
     def __str__(self):
         if self.infected == True:
             return "I"
@@ -105,7 +114,9 @@ class Person(object):
         global numDead
         global numImmune
         global numInfected
-        if self.infected == True and self.timeSinceInfection == 20:
+        global numRecoveredatStep
+        global numDeadatStep
+        if self.infected == True and self.timeSinceInfection == steps:
             self.timeSinceInfection=0
             randnum = random.randrange(100)
             if randnum < livechance:
@@ -113,12 +124,14 @@ class Person(object):
                 self.infected = False
                 numInfected-=1
                 numImmune+=1
+                numRecoveredatStep+=1
             else:
                 self.infected = False
                 self.dead = True
                 grid_[self.x][self.y] = 0
                 numInfected-=1
                 numDead+=1
+                numDeadatStep+=1
 
 
 
@@ -153,34 +166,51 @@ def resetVars():
     global numInfected
     global numImmune
     global numDead
+    global numDeadatStep
+    global numRecoveredatStep
     grid = []
     people = []
     numInfected = 1
     numImmune = 0
     numDead = 0
+    numDeadatStep = 0
+    numRecoveredatStep = 0
 
-def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
+def runSim(mode,list1,list2,list3 =[],list4=[],list5=[],list6=[],death=0,recovery=0):
     """
     runSim main functionality is running a random simulation of infection
     with certain givens, being population size, grid size, number of infected,
     death chance percent, and recovery chance percent. 
 
-    mode: Determines whether running the Basic Simulation for Part A
-          Or Other Customized parameters for later parts that may affect infection.
-    List 1: Is the list containing the total average or newly infected
-    List 2: Is the list containing the total average of already infected
-    List 3: Currently Unused
-    Death: Represents percent chance of death from infection
+    *Lists 3-6 Only Used 
+
+    mode:     Determines whether running the Basic Simulation for Part A
+              Or Other Customized parameters for later parts that may affect infection.
+    List 1:   Is the list containing the total average or newly infected at each step
+    List 2:   Is the list containing the total average of already infected
+    List 3:   List of Lists Average Recovered
+    List 4:   List of Lists Average Dead
+    List 5:   List of Lists # Average Dead per step of simulation
+    List 6:   List of Lists # Average Recovered per step of simulation 
+    Death:    Represents percent chance of death from infection
     Recovery: Represents percent change of recovery from infection
-    
+
     """
     resetVars()
     newInfected=[]
     alreadyInfected=[] 
+    newRecovered = []
+    newDead = []
+    totDead = []
+    totRecovered = []
     initSim()
     timestep = 0
     newInfected.append(0)
     alreadyInfected.append(1)
+    newRecovered.append(0)
+    newDead.append(0)
+    totDead.append(0)
+    totRecovered.append(0)
      
      #mode1 is part A, else is other modes for now
     if mode == 1:
@@ -195,6 +225,8 @@ def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
             alreadyInfected.append(numInfect)
     else:
         while numInfected > 0:
+            numRecov = numRecoveredatStep
+            newDied = numDead
             for i in people:
                 i.liveOrDie(grid,death,recovery)
             numInfect = numInfected
@@ -204,25 +236,74 @@ def runSim(mode,list1,list2,list3=[],death=0,recovery=0):
             for i in people:
                 i.updateInfected(grid)
             timestep+=1
-            newInfected.append(numInfected-numInfect)
-            alreadyInfected.append(numInfect)
+            newInfected.append(numInfected-numInfect) #Keeps Track of number infected at each step
+            alreadyInfected.append(numInfect)   #Keeps Track of overall currently infected 
+            newRecovered.append(numRecoveredatStep-numRecov)  #Keeps track of recovered at each step
+            newDead.append(numDead-newDied)     #keeps track of # dead at each step
+
+
 
     #print(timestep)
-    list2.append(alreadyInfected)
     list1.append(newInfected)
+    list2.append(alreadyInfected)
+
+
+    if (mode > 1):
+        list3.append(numImmune)
+        list4.append(numDead)
+        list5.append(newDead)
+        list6.append(newRecovered)
     """for p in grid:
         for element in p:
             print(element, end=' ')
         print()    
     print()"""
     resetVars()
+
+
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
+totalAvgRecover = []
+totalAvgDie = []
+totDeadPerStep = []
+totRecoverPerStep = []
+
+dfRecoveredAvg = pd.DataFrame()
+dfAvgDead = pd.DataFrame()
+dfDeadPerStep = pd.DataFrame()
+dfRecoveredPerStep = pd.DataFrame()
+
+def resetDfs():
+    global totalAvgAlreadyInfected
+    global totalAvgNewInfected 
+    global totalAvgRecover 
+    global totalAvgDie 
+    global totDeadPerStep 
+    global totRecoverPerStep 
+    global dfRecoveredAvg 
+    global dfAvgDead 
+    global dfDeadPerStep 
+    global dfRecoveredPerStep 
+    totalAvgAlreadyInfected =[] 
+    totalAvgNewInfected =[] 
+    totalAvgRecover = []
+    totalAvgDie = []
+    totDeadPerStep = []
+    totRecoverPerStep = []
+    dfRecoveredAvg = pd.DataFrame()
+    dfAvgDead = pd.DataFrame()
+    dfDeadPerStep = pd.DataFrame()
+    dfRecoveredPerStep = pd.DataFrame()
+
+
+
 partAGotInfected = pd.DataFrame()
 partAAlreadyInfected = pd.DataFrame()
 
 
-#PART A
+#----------------------PART A-----------------------
+
+#Simulation 1 Iteration
 for i in range(1):
     runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
 
@@ -231,6 +312,7 @@ tempDF2 = pd.DataFrame(totalAvgNewInfected)
 partAGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
 
+#Simulation 10 Iterations
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(10):
@@ -241,6 +323,8 @@ tempDF2 = pd.DataFrame(totalAvgNewInfected)
 partAGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
 
+
+#Simulation 100 Iterations
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(100):
@@ -251,6 +335,7 @@ tempDF2 = pd.DataFrame(totalAvgNewInfected)
 partAGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
 
+#Simulation 1000 Iterations
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(1000):
@@ -266,53 +351,142 @@ print()
 print(partAAlreadyInfected)
 
 
-#PART B
+
+#--------------------------PART B----------------------------
+print("Part B")
 print()
-totalAvgAlreadyInfected =[] 
-totalAvgNewInfected =[]
-temp =[] 
 
 partBGotInfected = pd.DataFrame()
 partBAlreadyInfected = pd.DataFrame()
+partBAvgRecovered = pd.DataFrame()
+partBAvgDied = pd.DataFrame()
+partBAvgDeadStep = pd.DataFrame()
+partBAvgRecoveredStep = pd.DataFrame()
 
 for i in range(1):
-    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
 partBGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
 partBAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
+partBAvgRecovered["Avg 1"] = tempDF3.mean(axis=0)
+partBAvgDied["Avg 1"] = tempDF4.mean(axis=0)
+partBAvgDeadStep["Avg 1"] = tempDF5.mean(axis=0)
+partBAvgRecoveredStep["Avg 1"] = tempDF6.mean(axis=0)
 
-totalAvgAlreadyInfected =[] 
-totalAvgNewInfected =[] 
+resetDfs()
 for i in range(10):
-    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
 partBGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
 partBAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
+partBAvgRecovered["Avg 10"] = tempDF3.mean(axis=0)
+partBAvgDied["Avg 10"] = tempDF4.mean(axis=0)
+partBAvgDeadStep["Avg 10"] = tempDF5.mean(axis=0)
+partBAvgRecoveredStep["Avg 10"] = tempDF6.mean(axis=0)
 
-totalAvgAlreadyInfected =[] 
-totalAvgNewInfected =[] 
+resetDfs()
 for i in range(100):
-    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
 partBGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
 partBAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
+partBAvgRecovered["Avg 100"] = tempDF3.mean(axis=0)
+partBAvgDied["Avg 100"] = tempDF4.mean(axis=0)
+partBAvgDeadStep["Avg 100"] = tempDF5.mean(axis=0)
+partBAvgRecoveredStep["Avg 100"] = tempDF6.mean(axis=0)
 
-totalAvgAlreadyInfected =[] 
-totalAvgNewInfected =[] 
+
+
+resetDfs() 
 for i in range(1000):
-    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,temp,10,90)
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
 
 tempDF = pd.DataFrame(totalAvgAlreadyInfected)
 tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
 partBGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
 partBAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
+partBAvgRecovered["Avg 1000"] = tempDF3.mean(axis=0)
+partBAvgDied["Avg 1000"] = tempDF4.mean(axis=0)
+partBAvgDeadStep["Avg 1000"] = tempDF5.mean(axis=0)
+partBAvgRecoveredStep["Avg 1000"] = tempDF6.mean(axis=0)
 
+#tempDF = pd.DataFrame()
+
+#print("Got Infected")
 print(partBGotInfected)
+
+
+#print("Already Infected")
 print()
-print(partBAlreadyInfected)
+#print(partBAlreadyInfected)
+
+#Need to fix dataframe or redo AvgDied and AvgRecovered since graph formatting off
+
+ax = plt.gca()
+plt.title('Average Total Infected Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAlreadyInfected.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
+partBAlreadyInfected.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
+partBAlreadyInfected.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
+partBAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Newly Infected Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBGotInfected.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
+partBGotInfected.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
+partBGotInfected.plot(kind='line',y='Avg 100', color='green',ax = ax)
+partBGotInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.show()
+
+ax = plt.gca()
+print(partBAvgRecovered)
+plt.title('Average Persons Recovered Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAvgRecoveredStep.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
+partBAvgRecoveredStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
+partBAvgRecoveredStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
+partBAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Died Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAvgDeadStep.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
+partBAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
+partBAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
+partBAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.show()
