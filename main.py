@@ -9,7 +9,7 @@ infectionRadius = 1
 steps = 20
 deathchance = 10
 recoverychance = 90
-SocDist = 1
+SocDist = 5
 numOfPeople = 20
 grid=[]
 people=[]
@@ -21,6 +21,8 @@ numRecoveredatStep = 0
 
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
+        self.startx = x_    #Starting X Coordinate for social distancing
+        self.starty = y_    #Starting Y Coordinate for social distancing
         self.x=x_
         self.y=y_
         self.id=id_
@@ -28,12 +30,34 @@ class Person(object):
         self.immune=False
         self.timeSinceInfection=0
         self.dead=False
-        self.resilience = random.randint(1,9)
+        self.resilience = random.randint(1,9) #Used to determine potential chance of infection
     def __str__(self):
         if self.infected == True:
             return "I"
         else:
             return "S"
+
+    def chkSocDist(self,x,y):
+        """
+        Function the evaluates the social distancing parameter of Person
+        Based on Starting position during first intialization of grid
+
+        Works by preventing the person from traveling too many squares in
+        the X or Y direction away from their 'Home' 
+
+        ------
+        Returns False if to far from home to prevent movement
+
+        Otherwise Returns true to allow for movement
+
+        ------
+
+        Social Distancing measure can work for both healthy and infected 
+        """
+        if ((x+self.startx > SocDist) or (y+self.starty > SocDist)):
+            return False
+        else:
+            return True
 
     def step(self, grid_):
         """
@@ -132,6 +156,7 @@ class Person(object):
                 numInfected-=1
                 numDead+=1
                 numDeadatStep+=1
+
 
 
 
