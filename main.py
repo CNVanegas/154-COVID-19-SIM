@@ -226,16 +226,16 @@ def runSim(mode,list1,list2,list3 =[],list4=[],list5=[],list6=[],death=0,recover
     alreadyInfected=[] 
     newRecovered = []
     newDead = []
-    totDead = []
-    totRecovered = []
+    alreadyDead = []
+    alreadyRecovered = []
     initSim()
     timestep = 0
     newInfected.append(0)
     alreadyInfected.append(1)
     newRecovered.append(0)
     newDead.append(0)
-    totDead.append(0)
-    totRecovered.append(0)
+    alreadyDead.append(0)
+    alreadyRecovered.append(0)
      
      #mode1 is part A, else is other modes for now
     if mode == 1:
@@ -265,6 +265,8 @@ def runSim(mode,list1,list2,list3 =[],list4=[],list5=[],list6=[],death=0,recover
             alreadyInfected.append(numInfect)   #Keeps Track of overall currently infected 
             newRecovered.append(numRecoveredatStep-numRecov)  #Keeps track of recovered at each step
             newDead.append(numDead-newDied)     #keeps track of # dead at each step
+            alreadyDead.append(numDead)
+            alreadyRecovered.append(numRecov)
 
 
 
@@ -274,8 +276,8 @@ def runSim(mode,list1,list2,list3 =[],list4=[],list5=[],list6=[],death=0,recover
 
 
     if (mode > 1):
-        list3.append(numImmune)
-        list4.append(numDead)
+        list3.append(alreadyRecovered)
+        list4.append(alreadyDead)
         list5.append(newDead)
         list6.append(newRecovered)
     """for p in grid:
@@ -476,13 +478,15 @@ print()
 #Need to fix dataframe or redo AvgDied and AvgRecovered since graph formatting off
 
 ax = plt.gca()
-plt.title('Average Total Infected Per Step')
+plt.title('Average Already Infected Per Step')
 plt.xlabel('Steps')
 plt.ylabel('# Average Per Step')
 partBAlreadyInfected.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
 partBAlreadyInfected.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partBAlreadyInfected.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partBAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.savefig('partBAlreadyInfected.png', transparent=True)
+
 plt.show()
 
 ax = plt.gca()
@@ -493,6 +497,18 @@ partBGotInfected.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
 partBGotInfected.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partBGotInfected.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partBGotInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.savefig('partBGotInfected.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Already Immune Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAvgRecovered.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
+partBAvgRecovered.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
+partBAvgRecovered.plot(kind='line',y='Avg 100', color='green',ax = ax)
+partBAvgRecovered.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.savefig('partBAvgRecovered.png', transparent=True)
 plt.show()
 
 ax = plt.gca()
@@ -504,6 +520,18 @@ partBAvgRecoveredStep.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
 partBAvgRecoveredStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partBAvgRecoveredStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partBAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.savefig('partBAvgRecoveredStep.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Already Dead Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAvgDied.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
+partBAvgDied.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
+partBAvgDied.plot(kind='line',y='Avg 100', color='green',ax = ax)
+partBAvgDied.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.savefig('partBAvgDied.png', transparent=True)
 plt.show()
 
 ax = plt.gca()
@@ -514,4 +542,5 @@ partBAvgDeadStep.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
 partBAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partBAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partBAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.savefig('partBAvgDeadStep.png', transparent=True)
 plt.show()
