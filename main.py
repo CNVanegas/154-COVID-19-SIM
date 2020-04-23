@@ -10,6 +10,7 @@ infectionRadius = 1     #Radius of potential infection
 steps = 20              #Steps until death or recovery chance
 deathchance = 10        #Percent chance of death
 recoverychance = 90     #Percent chance of recovery
+resilience = 0 #Used to determine potential chance of infection
 SocDist = 2             #Allowed amount of steps for social distancing
 numOfPeople = 20        #Population of people on grid
 grid=[]                 #List to make grid matrix
@@ -33,7 +34,7 @@ class Person(object):
         self.immune=False           #Immunity flag
         self.timeSinceInfection=0   #Time elapsed since infected
         self.dead=False             #Death flag
-        self.resilience = random.randrange(100) #Used to determine potential chance of infection
+        
     def __str__(self):
         if self.infected == True:
             return "I"
@@ -115,6 +116,7 @@ class Person(object):
         # 0 = up 1 = down 2=left 3=right
         global infectionRadius
         global numInfected
+        global resilience
         
         if self.infected == False:
             return
@@ -122,43 +124,51 @@ class Person(object):
             for j in range(1,infectionRadius+1):
                 if i == 0:
                     if (self.y-j > 0) and (grid_[self.x][self.y-j] != 0) and (grid_[self.x][self.y-j].infected == False):
-                        grid_[self.x][self.y-j].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x][self.y-j].infected=True
+                            numInfected+=1
                         break
                 elif i == 1:
                     if (self.y+j < boardSIZE-1) and (grid_[self.x][self.y+j] != 0) and (grid_[self.x][self.y+j].infected == False):
-                        grid_[self.x][self.y+j].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x][self.y+j].infected=True
+                            numInfected+=1
                         break
                 elif i == 2:
                     if  (self.x-j > 0) and (grid_[self.x-j][self.y] != 0) and (grid_[self.x-j][self.y].infected == False):
-                        grid_[self.x-j][self.y].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x-j][self.y].infected=True
+                            numInfected+=1
                         break
                 elif i == 3:
                     if (self.x+j < boardSIZE-1) and (grid_[self.x+j][self.y] != 0) and (grid_[self.x+j][self.y].infected == False):
-                        grid_[self.x+j][self.y].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x+j][self.y].infected=True
+                            numInfected+=1
                         break
                 elif i == 4:
                     if (self.x+j < boardSIZE-1) and (self.y+j < boardSIZE-1) and (grid_[self.x+j][self.y+j] != 0) and (grid_[self.x+j][self.y+j].infected == False):
-                        grid_[self.x+j][self.y+j].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x+j][self.y+j].infected=True
+                            numInfected+=1
                         break
                 elif i == 5:
                     if (self.x+j < boardSIZE-1) and (self.y-j > 0) and (grid_[self.x+j][self.y-j] != 0) and (grid_[self.x+j][self.y-j].infected == False):
-                        grid_[self.x+j][self.y-j].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x+j][self.y-j].infected=True
+                            numInfected+=1
                         break
                 elif i == 6:
                     if (self.x-j > 0)and (self.y+j < boardSIZE-1) and (grid_[self.x-j][self.y+j] != 0) and (grid_[self.x-j][self.y+j].infected == False):
-                        grid_[self.x-j][self.y+j].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x-j][self.y+j].infected=True
+                            numInfected+=1
                         break
                 elif i == 7:
                     if (self.x-j > 0) and (self.y-j > 0) and (grid_[self.x-j][self.y-j] != 0) and (grid_[self.x-j][self.y-j].infected == False):
-                        grid_[self.x-j][self.y-j].infected=True
-                        numInfected+=1
+                        if(resilience < random.randrange(100)):
+                            grid_[self.x-j][self.y-j].infected=True
+                            numInfected+=1
                         break
 
     def liveOrDie(self, grid_,diechance,livechance):
