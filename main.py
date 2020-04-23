@@ -1,8 +1,9 @@
 import random
 from itertools import count
-import pandas as pd
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 boardSIZE = 10
 infectionRadius = 1
@@ -106,27 +107,31 @@ class Person(object):
         dirs = [0,1,2,3]
         #get direction up down left right and move if it is open.
         # 0 = up 1 = down 2=left 3=right
+        global infectionRadius
         global numInfected
-        if self.infected == False and self.immune == False and self.dead == False:
-            for i in dirs:
+        
+        if self.infected == False:
+            return
+        for i in dirs:
+            for j in range(infectionRadius):
                 if i == 0:
-                    if (self.y-1 > 0) and (grid_[self.x][self.y-1] != 0) and (grid_[self.x][self.y-1].infected == True):
-                        self.infected=True
+                    if (self.y-j > 0) and (grid_[self.x][self.y-j] != 0) and (grid_[self.x][self.y-j].infected == False):
+                        grid_[self.x][self.y-j].infected=True
                         numInfected+=1
                         break
                 elif i == 1:
-                    if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] != 0) and (grid_[self.x][self.y+1].infected == True):
-                        self.infected=True
+                    if (self.y+j < boardSIZE-1) and (grid_[self.x][self.y+j] != 0) and (grid_[self.x][self.y+j].infected == False):
+                        grid_[self.x][self.y+j].infected=True
                         numInfected+=1
                         break
                 elif i == 2:
-                    if  (self.x-1 > 0) and (grid_[self.x-1][self.y] != 0) and (grid_[self.x-1][self.y].infected == True):
-                        self.infected=True
+                    if  (self.x-j > 0) and (grid_[self.x-j][self.y] != 0) and (grid_[self.x-j][self.y].infected == False):
+                        grid_[self.x-j][self.y].infected=True
                         numInfected+=1
                         break
                 elif i == 3:
-                    if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] != 0) and (grid_[self.x+1][self.y].infected == True):
-                        self.infected=True
+                    if (self.x+j < boardSIZE-1) and (grid_[self.x+j][self.y] != 0) and (grid_[self.x+j][self.y].infected == False):
+                        grid_[self.x+j][self.y].infected=True
                         numInfected+=1
                         break
 
