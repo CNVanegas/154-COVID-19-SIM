@@ -331,6 +331,7 @@ partAAlreadyInfected = pd.DataFrame()
 #----------------------PART A-----------------------
 
 #Simulation 1 Iteration
+resetDfs()
 for i in range(1):
     runSim(1,totalAvgNewInfected,totalAvgAlreadyInfected)
 
@@ -340,6 +341,7 @@ partAGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
 
 #Simulation 10 Iterations
+resetDfs()
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(10):
@@ -352,6 +354,7 @@ partAAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
 
 
 #Simulation 100 Iterations
+resetDfs()
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(100):
@@ -363,6 +366,8 @@ partAGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
 
 #Simulation 1000 Iterations
+resetDfs()
+
 totalAvgAlreadyInfected =[] 
 totalAvgNewInfected =[] 
 for i in range(1000):
@@ -380,6 +385,7 @@ print(partAAlreadyInfected)
 
 
 #--------------------------PART B----------------------------
+resetDfs()
 print("Part B")
 print()
 
@@ -547,6 +553,7 @@ plt.savefig('partBAvgDeadStep.png', transparent=True)
 
 
 #--------------------------PART C ----------------------------
+resetDfs()
 
 print("Part C")
 print()
