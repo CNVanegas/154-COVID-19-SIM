@@ -4,32 +4,35 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Global Variables Affecting Simulation
 boardSIZE = 10
-infectionRadius = 1
-steps = 20
-deathchance = 10
-recoverychance = 90
-SocDist = 5
-numOfPeople = 20
-grid=[]
-people=[]
-numInfected = 1
-numImmune = 0
-numDead = 0
-numDeadatStep = 0
-numRecoveredatStep = 0
+infectionRadius = 1     #Radius of potential infection
+steps = 20              #Steps until death or recovery chance
+deathchance = 10        #Percent chance of death
+recoverychance = 90     #Percent chance of recovery
+SocDist = 2             #Allowed amount of steps for social distancing
+numOfPeople = 20        #Population of people on grid
+grid=[]                 #List to make grid matrix
+people=[]               #List to hold person objects
+numInfected = 1         #Counter for number of infected people
+numImmune = 0           #Counter for number of immune people
+numDead = 0             #Counter for number of total dead 
+numDeadatStep = 0       #Counter for number of dead per step of simulation
+numRecoveredatStep = 0  #Counter for number of recovered per step of simulation
 
 class Person(object):
     def __init__(self,x_,y_,id_,infected_):
-        self.startx = x_    #Starting X Coordinate for social distancing
-        self.starty = y_    #Starting Y Coordinate for social distancing
-        self.x=x_
-        self.y=y_
-        self.id=id_
-        self.infected=infected_
-        self.immune=False
-        self.timeSinceInfection=0
-        self.dead=False
+        self.startx = x_            #Starting X Coordinate for social distancing
+        self.starty = y_            #Starting Y Coordinate for social distancing
+        self.dY = 0                 #Distance from Starting Y
+        self.dX = 0                 #Distance from Starting X
+        self.x=x_                   #Current X position on grid
+        self.y=y_                   #Current Y position on grid
+        self.id=id_                 #ID of person
+        self.infected=infected_     #Infected flag
+        self.immune=False           #Immunity flag
+        self.timeSinceInfection=0   #Time elapsed since infected
+        self.dead=False             #Death flag
         self.resilience = random.randrange(100) #Used to determine potential chance of infection
     def __str__(self):
         if self.infected == True:
@@ -54,7 +57,7 @@ class Person(object):
 
         Social Distancing measure can work for both healthy and infected 
         """
-        if ((x+self.startx > SocDist) or (y+self.starty > SocDist)):
+        if ((x+self.dX > SocDist) or (y+self.dY > SocDist)):
             return False
         else:
             return True
@@ -77,27 +80,31 @@ class Person(object):
         random.shuffle(dirs) #Movement directions randomized for random movement
         for i in dirs:
             if i == 0:
-                if (self.y-1 > 0) and (grid_[self.x][self.y-1] == 0):
+                if (self.y-1 > 0) and (grid_[self.x][self.y-1] == 0) and (self.chkSocDist(0,-1)):
                     grid_[self.x][self.y] = 0   #Current square of person set to 0 after once they've moved
                     self.y -= 1
+                    self.dY -= 1                #Updating distance from starting Y
                     grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             elif i == 1:
-                if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] == 0):
+                if (self.y+1 < boardSIZE-1) and (grid_[self.x][self.y+1] == 0) and (self.chkSocDist(0,1)):
                     grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
                     self.y += 1
+                    self.dY += 1                #Updating distance from starting Y
                     grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             elif i == 2:
-                if  (self.x-1 > 0) and (grid_[self.x-1][self.y] == 0):
+                if  (self.x-1 > 0) and (grid_[self.x-1][self.y] == 0) and (self.chkSocDist(-1,0)):
                     grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
                     self.x -= 1
+                    self.dX -= 1                #Updating distance from starting X
                     grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             elif i == 3:
-                if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] == 0):
+                if (self.x+1 < boardSIZE-1) and (grid_[self.x+1][self.y] == 0) and (self.chkSocDist(1,0)):
                     grid_[self.x][self.y] = 0 #Current square of person set to 0 after once they've moved
                     self.x += 1
+                    self.dX += 1                #Updating distance from starting X
                     grid_[self.x][self.y] = self #Updating grid to contain person
                     break
             #put code for checking virus either here or down below after all people have moved.
@@ -493,7 +500,7 @@ partBAlreadyInfected.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partBAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partBAlreadyInfected.png', transparent=True)
 
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Newly Infected Per Step')
@@ -504,7 +511,7 @@ partBGotInfected.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partBGotInfected.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partBGotInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
 plt.savefig('partBGotInfected.png', transparent=True)
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Already Immune Per Step')
@@ -515,7 +522,7 @@ partBAvgRecovered.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partBAvgRecovered.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partBAvgRecovered.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
 plt.savefig('partBAvgRecovered.png', transparent=True)
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 print(partBAvgRecovered)
@@ -527,7 +534,7 @@ partBAvgRecoveredStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partBAvgRecoveredStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partBAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partBAvgRecoveredStep.png', transparent=True)
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Already Dead Per Step')
@@ -538,7 +545,7 @@ partBAvgDied.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partBAvgDied.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partBAvgDied.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
 plt.savefig('partBAvgDied.png', transparent=True)
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Died Per Step')
@@ -549,7 +556,7 @@ partBAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partBAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partBAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partBAvgDeadStep.png', transparent=True)
-#plt.show()
+plt.show()
 
 
 #--------------------------PART C ----------------------------
@@ -664,7 +671,7 @@ partCAlreadyInfected.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partCAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partCAlreadyInfected.png', transparent=True)
 
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Newly Infected Per Step')
@@ -675,7 +682,7 @@ partCGotInfected.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partCGotInfected.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partCGotInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
 plt.savefig('partCGotInfected.png', transparent=True)
-#plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Already Immune Per Step')
@@ -686,7 +693,7 @@ partCAvgRecovered.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partCAvgRecovered.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partCAvgRecovered.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
 plt.savefig('partCAvgRecovered.png', transparent=True)
-##plt.show()
+plt.show()
 
 ax = plt.gca()
 print(partCAvgRecovered)
@@ -698,7 +705,7 @@ partCAvgRecoveredStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partCAvgRecoveredStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partCAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partCAvgRecoveredStep.png', transparent=True)
-##plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Already Dead Per Step')
@@ -709,7 +716,7 @@ partCAvgDied.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
 partCAvgDied.plot(kind='line',y='Avg 100', color='green',ax = ax)
 partCAvgDied.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
 plt.savefig('partCAvgDied.png', transparent=True)
-##plt.show()
+plt.show()
 
 ax = plt.gca()
 plt.title('Average Persons Died Per Step')
@@ -720,4 +727,4 @@ partCAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partCAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partCAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partCAvgDeadStep.png', transparent=True)
-##plt.show()
+plt.show()
