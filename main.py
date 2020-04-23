@@ -11,7 +11,7 @@ steps = 20              #Steps until death or recovery chance
 deathchance = 10        #Percent chance of death
 recoverychance = 90     #Percent chance of recovery
 resilience = 0 #Used to determine potential chance of infection
-SocDist = 2             #Allowed amount of steps for social distancing
+SocDist = 10             #Allowed amount of steps for social distancing
 numOfPeople = 20        #Population of people on grid
 grid=[]                 #List to make grid matrix
 people=[]               #List to hold person objects
@@ -602,6 +602,7 @@ steps=10
 deathchance=50
 recoverychance=50
 infectionRadius=2
+
 partCGotInfected = pd.DataFrame()
 partCAlreadyInfected = pd.DataFrame()
 partCAvgRecovered = pd.DataFrame()
@@ -762,4 +763,178 @@ partCAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partCAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partCAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partCAvgDeadStep.png', transparent=True)
+plt.show()
+
+#--------------------------PART D ----------------------------
+resetDfs()
+
+print("Part C")
+print()
+steps=20
+deathchance=10
+recoverychance=90
+infectionRadius=1
+SocDist = 2
+resilience = 50
+
+partDGotInfected = pd.DataFrame()
+partDAlreadyInfected = pd.DataFrame()
+partDAvgRecovered = pd.DataFrame()
+partDAvgDied = pd.DataFrame()
+partDAvgDeadStep = pd.DataFrame()
+partDAvgRecoveredStep = pd.DataFrame()
+
+for i in range(1):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
+partDGotInfected["Avg 1"] = tempDF2.mean(axis = 0)
+partDAlreadyInfected["Avg 1"] = tempDF.mean(axis = 0)
+partDAvgRecovered["Avg 1"] = tempDF3.mean(axis=0)
+partDAvgDied["Avg 1"] = tempDF4.mean(axis=0)
+partDAvgDeadStep["Avg 1"] = tempDF5.mean(axis=0)
+partDAvgRecoveredStep["Avg 1"] = tempDF6.mean(axis=0)
+
+resetDfs()
+for i in range(10):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
+partDGotInfected["Avg 10"] = tempDF2.mean(axis = 0)
+partDAlreadyInfected["Avg 10"] = tempDF.mean(axis = 0)
+partDAvgRecovered["Avg 10"] = tempDF3.mean(axis=0)
+partDAvgDied["Avg 10"] = tempDF4.mean(axis=0)
+partDAvgDeadStep["Avg 10"] = tempDF5.mean(axis=0)
+partDAvgRecoveredStep["Avg 10"] = tempDF6.mean(axis=0)
+
+resetDfs()
+for i in range(100):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
+partDGotInfected["Avg 100"] = tempDF2.mean(axis = 0)
+partDAlreadyInfected["Avg 100"] = tempDF.mean(axis = 0)
+partDAvgRecovered["Avg 100"] = tempDF3.mean(axis=0)
+partDAvgDied["Avg 100"] = tempDF4.mean(axis=0)
+partDAvgDeadStep["Avg 100"] = tempDF5.mean(axis=0)
+partDAvgRecoveredStep["Avg 100"] = tempDF6.mean(axis=0)
+
+
+
+resetDfs() 
+for i in range(1000):
+    runSim(2,totalAvgNewInfected,totalAvgAlreadyInfected,totalAvgRecover,totalAvgDie,totDeadPerStep,totRecoverPerStep,deathchance,recoverychance)
+
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF = pd.DataFrame(totalAvgAlreadyInfected)
+tempDF2 = pd.DataFrame(totalAvgNewInfected)
+tempDF3 = pd.DataFrame(totalAvgRecover)
+tempDF4 = pd.DataFrame(totalAvgDie)
+tempDF5 = pd.DataFrame(totDeadPerStep)
+tempDF6 = pd.DataFrame(totRecoverPerStep)
+partDGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
+partDAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
+partDAvgRecovered["Avg 1000"] = tempDF3.mean(axis=0)
+partDAvgDied["Avg 1000"] = tempDF4.mean(axis=0)
+partDAvgDeadStep["Avg 1000"] = tempDF5.mean(axis=0)
+partDAvgRecoveredStep["Avg 1000"] = tempDF6.mean(axis=0)    
+
+#tempDF = pd.DataFrame()
+
+#print("Got Infected")
+print(partDGotInfected)
+
+
+#print("Already Infected")
+print()
+#print(partDAlreadyInfected)
+
+#Need to fix dataframe or redo AvgDied and AvgRecovered since graph formatting off
+
+ax = plt.gca()
+plt.title('Average Already Infected Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAlreadyInfected.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
+partDAlreadyInfected.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
+partDAlreadyInfected.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
+partDAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.savefig('partDAlreadyInfected.png', transparent=True)
+
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Newly Infected Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDGotInfected.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
+partDGotInfected.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
+partDGotInfected.plot(kind='line',y='Avg 100', color='green',ax = ax)
+partDGotInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.savefig('partDGotInfected.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Already Immune Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAvgRecovered.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
+partDAvgRecovered.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
+partDAvgRecovered.plot(kind='line',y='Avg 100', color='green',ax = ax)
+partDAvgRecovered.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.savefig('partDAvgRecovered.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+print(partDAvgRecovered)
+plt.title('Average Persons Recovered Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAvgRecoveredStep.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
+partDAvgRecoveredStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
+partDAvgRecoveredStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
+partDAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.savefig('partDAvgRecoveredStep.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Already Dead Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAvgDied.plot(kind='line',y='Avg 1',color = 'red', ax = ax)
+partDAvgDied.plot(kind ='line',y='Avg 10',color = 'blue',ax = ax)
+partDAvgDied.plot(kind='line',y='Avg 100', color='green',ax = ax)
+partDAvgDied.plot(kind='line',y='Avg 1000',color = 'purple',ax = ax)
+plt.savefig('partDAvgDied.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+plt.title('Average Persons Died Per Step')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAvgDeadStep.plot(kind='line',y='Avg 1',color = 'red',ax=ax)
+partDAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
+partDAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
+partDAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
+plt.savefig('partDAvgDeadStep.png', transparent=True)
 plt.show()
