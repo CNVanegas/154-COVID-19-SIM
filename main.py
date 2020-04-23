@@ -5,14 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #Global Variables Affecting Simulation
-boardSIZE = 10
+boardSIZE = 50
 infectionRadius = 1     #Radius of potential infection
 steps = 20              #Steps until death or recovery chance
 deathchance = 10        #Percent chance of death
 recoverychance = 90     #Percent chance of recovery
 resilience = 0 #Used to determine potential chance of infection
-SocDist = 10             #Allowed amount of steps for social distancing
-numOfPeople = 20        #Population of people on grid
+SocDist = 50             #Allowed amount of steps for social distancing
+numOfPeople = 100       #Population of people on grid
 grid=[]                 #List to make grid matrix
 people=[]               #List to hold person objects
 numInfected = 1         #Counter for number of infected people
@@ -208,7 +208,7 @@ def initSim():
     global grid
     global people
     grid = [[0 for i in range(cols)] for j in range(rows)] 
-#print(grid)
+##print(grid)
     for i in range(numOfPeople):
         tempx = 0
         tempy = 0
@@ -223,8 +223,8 @@ def initSim():
     people[random.randrange(0,len(people)-1)].infected = True
     #for p in grid:
         #for element in p:
-           #print(element, end=' ')
-        #print()
+           ##print(element, end=' ')
+        ##print()
 
 def resetVars():
     global grid
@@ -311,7 +311,7 @@ def runSim(mode,list1,list2,list3 =[],list4=[],list5=[],list6=[],death=0,recover
 
 
 
-    #print(timestep)
+    ##print(timestep)
     list1.append(newInfected)
     list2.append(alreadyInfected)
 
@@ -323,9 +323,9 @@ def runSim(mode,list1,list2,list3 =[],list4=[],list5=[],list6=[],death=0,recover
         list6.append(newRecovered)
     """for p in grid:
         for element in p:
-            print(element, end=' ')
-        print()    
-    print()"""
+            #print(element, end=' ')
+        #print()    
+    #print()"""
     resetVars()
 
 
@@ -419,16 +419,16 @@ tempDF2 = pd.DataFrame(totalAvgNewInfected)
 partAGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
 
-print(partAGotInfected)
-print()
-print(partAAlreadyInfected)
+#print(partAGotInfected)
+#print()
+#print(partAAlreadyInfected)
 
 
 
 #--------------------------PART B----------------------------
 resetDfs()
-print("Part B")
-print()
+#print("Part B")
+#print()
 
 partBGotInfected = pd.DataFrame()
 partBAlreadyInfected = pd.DataFrame()
@@ -514,13 +514,13 @@ partBAvgRecoveredStep["Avg 1000"] = tempDF6.mean(axis=0)
 
 #tempDF = pd.DataFrame()
 
-#print("Got Infected")
-print(partBGotInfected)
+##print("Got Infected")
+#print(partBGotInfected)
 
 
-#print("Already Infected")
-print()
-#print(partBAlreadyInfected)
+##print("Already Infected")
+#print()
+##print(partBAlreadyInfected)
 
 #Need to fix dataframe or redo AvgDied and AvgRecovered since graph formatting off
 
@@ -559,7 +559,7 @@ plt.savefig('partBAvgRecovered.png', transparent=True)
 plt.show()
 
 ax = plt.gca()
-print(partBAvgRecovered)
+#print(partBAvgRecovered)
 plt.title('Average Persons Recovered Per Step')
 plt.xlabel('Steps')
 plt.ylabel('# Average Per Step')
@@ -596,12 +596,12 @@ plt.show()
 #--------------------------PART C ----------------------------
 resetDfs()
 
-print("Part C")
-print()
+#print("Part C")
+#print()
 steps=10
 deathchance=50
 recoverychance=50
-infectionRadius=2
+infectionRadius=3
 
 partCGotInfected = pd.DataFrame()
 partCAlreadyInfected = pd.DataFrame()
@@ -687,13 +687,13 @@ partCAvgRecoveredStep["Avg 1000"] = tempDF6.mean(axis=0)
 
 #tempDF = pd.DataFrame()
 
-#print("Got Infected")
-print(partCGotInfected)
+##print("Got Infected")
+#print(partCGotInfected)
 
 
-#print("Already Infected")
-print()
-#print(partCAlreadyInfected)
+##print("Already Infected")
+#print()
+##print(partCAlreadyInfected)
 
 #Need to fix dataframe or redo AvgDied and AvgRecovered since graph formatting off
 
@@ -732,7 +732,7 @@ plt.savefig('partCAvgRecovered.png', transparent=True)
 plt.show()
 
 ax = plt.gca()
-print(partCAvgRecovered)
+#print(partCAvgRecovered)
 plt.title('Average Persons Recovered Per Step')
 plt.xlabel('Steps')
 plt.ylabel('# Average Per Step')
@@ -768,13 +768,13 @@ plt.show()
 #--------------------------PART D ----------------------------
 resetDfs()
 
-print("Part C")
-print()
+#print("Part D")
+#print()
 steps=20
 deathchance=10
 recoverychance=90
 infectionRadius=1
-SocDist = 2
+SocDist = 10
 resilience = 50
 
 partDGotInfected = pd.DataFrame()
@@ -861,13 +861,13 @@ partDAvgRecoveredStep["Avg 1000"] = tempDF6.mean(axis=0)
 
 #tempDF = pd.DataFrame()
 
-#print("Got Infected")
-print(partDGotInfected)
+##print("Got Infected")
+#print(partDGotInfected)
 
 
-#print("Already Infected")
-print()
-#print(partDAlreadyInfected)
+##print("Already Infected")
+#print()
+##print(partDAlreadyInfected)
 
 #Need to fix dataframe or redo AvgDied and AvgRecovered since graph formatting off
 
@@ -906,7 +906,7 @@ plt.savefig('partDAvgRecovered.png', transparent=True)
 plt.show()
 
 ax = plt.gca()
-print(partDAvgRecovered)
+#print(partDAvgRecovered)
 plt.title('Average Persons Recovered Per Step')
 plt.xlabel('Steps')
 plt.ylabel('# Average Per Step')
