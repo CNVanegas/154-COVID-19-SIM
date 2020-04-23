@@ -110,7 +110,7 @@ class Person(object):
             #put code for checking virus either here or down below after all people have moved.
 
     def updateInfected(self, grid_):
-        dirs = [0,1,2,3]
+        dirs = [0,1,2,3,4,5,6,7]
         #get direction up down left right and move if it is open.
         # 0 = up 1 = down 2=left 3=right
         global infectionRadius
@@ -138,6 +138,26 @@ class Person(object):
                 elif i == 3:
                     if (self.x+j < boardSIZE-1) and (grid_[self.x+j][self.y] != 0) and (grid_[self.x+j][self.y].infected == False):
                         grid_[self.x+j][self.y].infected=True
+                        numInfected+=1
+                        break
+                elif i == 4:
+                    if (self.x+j < boardSIZE-1) and (self.y+j < boardSIZE-1) and (grid_[self.x+j][self.y+j] != 0) and (grid_[self.x+j][self.y+j].infected == False):
+                        grid_[self.x+j][self.y+j].infected=True
+                        numInfected+=1
+                        break
+                elif i == 5:
+                    if (self.x+j < boardSIZE-1) and (self.y-j > 0) and (grid_[self.x+j][self.y-j] != 0) and (grid_[self.x+j][self.y-j].infected == False):
+                        grid_[self.x+j][self.y-j].infected=True
+                        numInfected+=1
+                        break
+                elif i == 6:
+                    if (self.x-j > 0)and (self.y+j < boardSIZE-1) and (grid_[self.x-j][self.y+j] != 0) and (grid_[self.x-j][self.y+j].infected == False):
+                        grid_[self.x-j][self.y+j].infected=True
+                        numInfected+=1
+                        break
+                elif i == 7:
+                    if (self.x-j > 0) and (self.y-j > 0) and (grid_[self.x-j][self.y-j] != 0) and (grid_[self.x-j][self.y-j].infected == False):
+                        grid_[self.x-j][self.y-j].infected=True
                         numInfected+=1
                         break
 
@@ -571,6 +591,7 @@ print()
 steps=10
 deathchance=50
 recoverychance=50
+infectionRadius=2
 partCGotInfected = pd.DataFrame()
 partCAlreadyInfected = pd.DataFrame()
 partCAvgRecovered = pd.DataFrame()
