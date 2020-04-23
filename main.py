@@ -5,14 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #Global Variables Affecting Simulation
-boardSIZE = 50
+boardSIZE = 100
 infectionRadius = 1     #Radius of potential infection
 steps = 20              #Steps until death or recovery chance
 deathchance = 10        #Percent chance of death
 recoverychance = 90     #Percent chance of recovery
 resilience = 0 #Used to determine potential chance of infection
 SocDist = 50             #Allowed amount of steps for social distancing
-numOfPeople = 100       #Population of people on grid
+numOfPeople = 200       #Population of people on grid
 grid=[]                 #List to make grid matrix
 people=[]               #List to hold person objects
 numInfected = 1         #Counter for number of infected people
@@ -601,7 +601,7 @@ resetDfs()
 steps=10
 deathchance=50
 recoverychance=50
-infectionRadius=3
+infectionRadius=6
 
 partCGotInfected = pd.DataFrame()
 partCAlreadyInfected = pd.DataFrame()
@@ -774,7 +774,7 @@ steps=20
 deathchance=10
 recoverychance=90
 infectionRadius=1
-SocDist = 10
+SocDist = 15
 resilience = 50
 
 partDGotInfected = pd.DataFrame()
