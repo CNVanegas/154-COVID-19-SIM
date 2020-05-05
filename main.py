@@ -419,6 +419,26 @@ tempDF2 = pd.DataFrame(totalAvgNewInfected)
 partAGotInfected["Avg 1000"] = tempDF2.mean(axis = 0)
 partAAlreadyInfected["Avg 1000"] = tempDF.mean(axis = 0)
 
+
+
+ax = plt.gca()
+plt.title('Newly Infected Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partAGotInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax,label='New Infections')
+plt.savefig('NewlyInfectedPerStepPartA.png', transparent=True)
+
+plt.show()
+
+ax = plt.gca()
+plt.title('Total Infected Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partAAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax,label='Total Infections')
+plt.savefig('TotalInfectedPerStepPartA.png', transparent=True)
+
+plt.show()
+
 #print(partAGotInfected)
 #print()
 #print(partAAlreadyInfected)
@@ -592,6 +612,27 @@ partBAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partBAvgDeadStep.png', transparent=True)
 plt.show()
 
+ax = plt.gca()
+plt.title('Total Infected,Dead,Immune Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAvgDied.plot(kind='line',y='Avg 1000',color = 'red',ax=ax,label='Dead')
+partBAvgRecovered.plot(kind='line',y='Avg 1000',color = 'blue',ax=ax,label='Immune')
+partBAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'green',ax=ax,label='Infected')
+plt.savefig('TotalAllPerStepPartB.png', transparent=True)
+
+plt.show()
+
+ax = plt.gca()
+plt.title('Newly Infected,Dead,Immune Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partBAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'red',ax=ax,label='New Deaths')
+partBAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'green',ax=ax,label='New Immune')
+partBGotInfected.plot(kind='line',y='Avg 1000',color = 'blue',ax=ax,label='New Infections')
+plt.savefig('NewAllPerStepPartB.png', transparent=True)
+
+plt.show()
 
 #--------------------------PART C ----------------------------
 resetDfs()
@@ -765,6 +806,28 @@ partCAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partCAvgDeadStep.png', transparent=True)
 plt.show()
 
+ax = plt.gca()
+plt.title('Total Infected,Dead,Immune Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partCAvgDied.plot(kind='line',y='Avg 1000',color = 'red',ax=ax,label='Dead')
+partCAvgRecovered.plot(kind='line',y='Avg 1000',color = 'blue',ax=ax,label='Immune')
+partCAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'green',ax=ax,label='Infected')
+plt.savefig('TotalAllPerStepPartC.png', transparent=True)
+
+plt.show()
+
+ax = plt.gca()
+plt.title('Newly Infected,Dead,Immune Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partCAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'red',ax=ax,label='New Deaths')
+partCAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'green',ax=ax,label='New Immune')
+partCGotInfected.plot(kind='line',y='Avg 1000',color = 'blue',ax=ax,label='New Infections')
+plt.savefig('NewAllPerStepPartC.png', transparent=True)
+
+plt.show()
+
 #--------------------------PART D ----------------------------
 resetDfs()
 
@@ -775,7 +838,7 @@ deathchance=10
 recoverychance=90
 infectionRadius=1
 SocDist = 15
-resilience = 50
+resilience = 20
 
 partDGotInfected = pd.DataFrame()
 partDAlreadyInfected = pd.DataFrame()
@@ -937,4 +1000,26 @@ partDAvgDeadStep.plot(kind='line',y='Avg 10',color = 'blue',ax=ax)
 partDAvgDeadStep.plot(kind='line',y='Avg 100',color = 'green',ax=ax)
 partDAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'purple',ax=ax)
 plt.savefig('partDAvgDeadStep.png', transparent=True)
+plt.show()
+
+ax = plt.gca()
+plt.title('Total Infected,Dead,Immune Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAvgDied.plot(kind='line',y='Avg 1000',color = 'red',ax=ax,label='Dead')
+partDAvgRecovered.plot(kind='line',y='Avg 1000',color = 'blue',ax=ax,label='Immune')
+partDAlreadyInfected.plot(kind='line',y='Avg 1000',color = 'green',ax=ax,label='Infected')
+plt.savefig('TotalAllPerStepPartD.png', transparent=True)
+
+plt.show()
+
+ax = plt.gca()
+plt.title('Newly Infected,Dead,Immune Per Step\n(Average of 1000)')
+plt.xlabel('Steps')
+plt.ylabel('# Average Per Step')
+partDAvgDeadStep.plot(kind='line',y='Avg 1000',color = 'red',ax=ax,label='New Deaths')
+partDAvgRecoveredStep.plot(kind='line',y='Avg 1000',color = 'green',ax=ax,label='New Immune')
+partDGotInfected.plot(kind='line',y='Avg 1000',color = 'blue',ax=ax,label='New Infections')
+plt.savefig('NewAllPerStepPartD.png', transparent=True)
+
 plt.show()
